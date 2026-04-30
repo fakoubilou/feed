@@ -4,7 +4,9 @@ import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from '@/components/Toast'
 import { StaffRow, type StaffMember } from './StaffRow'
-import { calcStaffMinutes, minToStr, fmt, ticketMoyen, coprod, coprodColor, coprodLabel } from '@/lib/calculations'
+import { calcStaffMinutes, minToStr, fmt, ticketMoyen, coprod, coprodColor, coprodLabel, calcRentabiliteWithSettings, STATUT_CONFIG } from '@/lib/calculations'
+import { useSettings } from '@/lib/useSettings'
+import { Gauge } from '@/components/Gauge'
 import type { Restaurant } from '@/lib/supabase/types'
 
 let nextId = 1
@@ -13,6 +15,7 @@ const emptyStaff = (): StaffMember => ({ id: nextId++, nom: '', dh: '', dm: '', 
 
 export function RAZForm({ restaurant }: { restaurant: Restaurant }) {
   const router = useRouter()
+  const { settings } = useSettings()
   const [ca, setCa] = useState('')
   const [cov, setCov] = useState('')
   const [offerts, setOfferts] = useState('')
@@ -93,23 +96,51 @@ export function RAZForm({ restaurant }: { restaurant: Restaurant }) {
     router.push('/manager/historique')
   }
 
+  const rent = caNum && totalStaffHours
+    ? calcRentabiliteWithSettings(caNum, totalStaffHours, settings)
+    : null
+  const cfg = rent ? STATUT_CONFIG[rent.statut] : null
+
   return (
     <div className="section">
-      {/* LIVE BAR */}
-      <div className="live-bar">
-        <div className="live-cell">
-          <div className="live-cell-lbl">Ticket moy.</div>
-          <div className="live-cell-val" style={{ color: 'var(--blue)' }}>
-            {caNum && covNum ? fmt(ticket) + '€' : '—'}
+      {/* LIVE PROFIT BLOCK */}
+      {rent && cfg ? (
+        <div style={{
+          background: cfg.bg, border: `1px solid ${cfg.border}`,
+          borderRadius: 18, padding: '18px 20px 14px',
+          marginBottom: 16, textAlign: 'center',
+        }}>
+          <div style={{ fontSize: 11, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.1em', marginBottom: 6 }}>
+            PROFIT ESTIMÉ
+          </div>
+          <div style={{ fontSize: 44, fontWeight: 800, letterSpacing: '-0.03em', lineHeight: 1, color: cfg.color }}>
+            {rent.profit >= 0 ? '+' : ''}{fmt(rent.profit)}€
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', margin: '4px 0 0' }}>
+            <Gauge marge={rent.marge} margeFaible={settings.marge_faible} margeBonne={settings.marge_bonne} />
+          </div>
+          <div style={{
+            display: 'inline-flex', alignItems: 'center', gap: 5,
+            background: 'rgba(0,0,0,0.18)', borderRadius: 100,
+            padding: '4px 12px', marginBottom: 10,
+            fontSize: 12, fontWeight: 700, color: cfg.color,
+          }}>
+            {cfg.emoji} {cfg.label} · {rent.marge.toFixed(1)}%
+          </div>
+          <div style={{ display: 'flex', justifyContent: 'center', gap: 20, fontSize: 12, color: 'var(--sub)', opacity: 0.7 }}>
+            {caNum && covNum ? <span>Ticket {fmt(ticket)}€</span> : null}
+            {caNum && totalStaffHours ? <span style={{ color: coprodColor(cp) }}>Co.prod {coprodLabel(cp)}</span> : null}
           </div>
         </div>
-        <div className="live-cell">
-          <div className="live-cell-lbl">Co. prod</div>
-          <div className="live-cell-val" style={{ color: caNum && totalStaffHours ? coprodColor(cp) : 'var(--sub)' }}>
-            {caNum && totalStaffHours ? coprodLabel(cp) : '—'}
-          </div>
+      ) : (
+        <div style={{
+          background: 'rgba(255,255,255,0.03)', border: '1px solid var(--line2)',
+          borderRadius: 18, padding: '20px', marginBottom: 16,
+          textAlign: 'center', color: 'var(--dim)', fontSize: 13,
+        }}>
+          Saisis le CA + le personnel pour voir la rentabilité
         </div>
-      </div>
+      )}
 
       {/* HORAIRES */}
       <div className="sec-label">Horaires</div>

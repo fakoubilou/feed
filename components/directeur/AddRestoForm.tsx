@@ -3,25 +3,23 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { createClient } from '@/lib/supabase/client'
 import { toast } from '@/components/Toast'
+import type { Restaurant } from '@/lib/supabase/types'
 
-export function AddRestoForm() {
+export function AddRestoForm({ existing }: { existing: Restaurant[] }) {
   const router = useRouter()
   const [name, setName] = useState('')
-  const [taux, setTaux] = useState('12.50')
   const [loading, setLoading] = useState(false)
 
   async function handleAdd() {
-    if (!name.trim()) { toast('⚠ Entre un nom'); return }
+    const trimmed = name.trim()
+    if (!trimmed) { toast('⚠ Entre un nom'); return }
+    const dup = existing.find(r => r.name.toLowerCase() === trimmed.toLowerCase())
+    if (dup) { toast('⚠ Ce restaurant existe déjà'); return }
     setLoading(true)
-    const supabase = createClient()
-    const { error } = await supabase
-      .from('restaurants')
-      .insert({ name: name.trim(), taux_horaire: parseFloat(taux) || 12.5 })
-
+    const { error } = await createClient().from('restaurants').insert({ name: trimmed, taux_horaire: 15 })
     if (error) { toast('⚠ ' + error.message); setLoading(false); return }
     toast('Restaurant ajouté ✓')
     setName('')
-    setTaux('12.50')
     setLoading(false)
     router.refresh()
   }
@@ -30,11 +28,9 @@ export function AddRestoForm() {
     <>
       <div className="field">
         <label>Nom</label>
-        <input type="text" value={name} onChange={e => setName(e.target.value)} placeholder="Bistrot du Port" />
-      </div>
-      <div className="field">
-        <label>Taux horaire €/h</label>
-        <input type="number" value={taux} onChange={e => setTaux(e.target.value)} step={0.5} />
+        <input type="text" value={name} onChange={e => setName(e.target.value)}
+          placeholder="Bistrot du Port"
+          onKeyDown={e => e.key === 'Enter' && handleAdd()} />
       </div>
       <button className="btn-ghost" onClick={handleAdd} disabled={loading}>
         {loading ? 'Ajout…' : 'Ajouter le restaurant'}

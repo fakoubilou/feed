@@ -3,14 +3,14 @@ import { useSettings } from '@/lib/useSettings'
 import { calcRentabiliteWithSettings, fmt, dateStr } from '@/lib/calculations'
 import type { RazEntry } from '@/lib/supabase/types'
 
-export function HistoList({ entries }: { entries: RazEntry[] }) {
+export function HistoSection({ entries }: { entries: RazEntry[] }) {
   const { settings } = useSettings()
 
   if (!entries.length) {
     return (
       <div className="empty">
         <div className="empty-ico">≡</div>
-        <div className="empty-txt">Aucune RAZ enregistrée.<br />Commence ce soir.</div>
+        <div className="empty-txt">Aucune RAZ.</div>
       </div>
     )
   }
@@ -21,7 +21,7 @@ export function HistoList({ entries }: { entries: RazEntry[] }) {
         const r = calcRentabiliteWithSettings(e.ca, e.staff_hours, settings)
         const hasData = r.statut !== 'vide'
         return (
-          <div key={e.id} className="histo-row up">
+          <div key={e.id} className="histo-row">
             <div>
               <div className="hr-date">{dateStr(e.date)}</div>
               {e.note && e.note !== 'R.a.s' && (

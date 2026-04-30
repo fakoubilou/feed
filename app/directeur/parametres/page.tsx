@@ -2,11 +2,11 @@ import { redirect } from 'next/navigation'
 import { createClient } from '@/lib/supabase/server'
 import { Toast } from '@/components/Toast'
 import { LogoutButton } from '@/components/LogoutButton'
-import { AddRestoForm } from '@/components/directeur/AddRestoForm'
-import { RestoManageList } from '@/components/directeur/RestoManageList'
+import { ParametresForm } from '@/components/directeur/ParametresForm'
+import { ImportForm } from '@/components/directeur/ImportForm'
 import type { Restaurant } from '@/lib/supabase/types'
 
-export default async function RestosPage() {
+export default async function ParametresPage() {
   const supabase = await createClient()
   const { data: { user } } = await supabase.auth.getUser()
   if (!user) redirect('/login')
@@ -29,19 +29,26 @@ export default async function RestosPage() {
       </header>
 
       <div className="scroll-area">
-        <div className="page-head"><div className="page-head-title">Restaurants</div></div>
+        <div className="page-head">
+          <div className="page-head-title">Paramètres</div>
+        </div>
         <div className="section">
-          <RestoManageList restaurants={restaurants} />
+          <div className="sec-label">Calculs de rentabilité</div>
+          <ParametresForm />
 
-          <div className="sec-label" style={{ marginTop: 24 }}>Ajouter</div>
-          <AddRestoForm existing={restaurants} />
+          {restaurants.length > 0 && (
+            <>
+              <div className="sec-label" style={{ marginTop: 28 }}>Importer une RAZ</div>
+              <ImportForm restaurants={restaurants} />
+            </>
+          )}
         </div>
       </div>
 
       <nav className="bottom-nav">
         <a href="/directeur" className="bnav-btn"><span className="bnav-ico">◉</span>Dashboard</a>
-        <a href="/directeur/restos" className="bnav-btn active"><span className="bnav-ico">⊞</span>Restos</a>
-        <a href="/directeur/parametres" className="bnav-btn"><span className="bnav-ico">⚙</span>Paramètres</a>
+        <a href="/directeur/restos" className="bnav-btn"><span className="bnav-ico">⊞</span>Restos</a>
+        <a href="/directeur/parametres" className="bnav-btn active"><span className="bnav-ico">⚙</span>Paramètres</a>
       </nav>
       <Toast />
     </div>

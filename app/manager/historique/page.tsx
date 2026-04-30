@@ -3,7 +3,7 @@ import { createClient } from '@/lib/supabase/server'
 import { HistoList } from '@/components/manager/HistoList'
 import { Toast } from '@/components/Toast'
 import { LogoutButton } from '@/components/LogoutButton'
-import type { Profile, RazWithStaff } from '@/lib/supabase/types'
+import type { Profile, RazEntry } from '@/lib/supabase/types'
 
 export default async function HistoriquePage() {
   const supabase = await createClient()
@@ -29,12 +29,12 @@ export default async function HistoriquePage() {
 
   const { data: entriesRaw } = await supabase
     .from('raz_entries')
-    .select('*, staff_entries(*)')
+    .select('*')
     .eq('restaurant_id', profile.restaurant_id)
     .order('date', { ascending: false })
     .limit(30)
 
-  const entries = (entriesRaw as RazWithStaff[]) ?? []
+  const entries = (entriesRaw as RazEntry[]) ?? []
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', minHeight: '100vh' }}>
