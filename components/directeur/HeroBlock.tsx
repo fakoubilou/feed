@@ -39,7 +39,7 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
 
   return (
     <>
-      <div className="hero-block" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+      <div className="hero-block" style={{ display: 'flex', flexDirection: 'column', alignItems: 'stretch' }}>
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, width: '100%' }}>
           <div className="hero-label">Aujourd&apos;hui</div>
@@ -55,8 +55,8 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
         </div>
 
         {/* 1. CA */}
-        <div style={{ textAlign: 'center', marginBottom: 4, display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%' }}>
-          <div className="hero-ca" style={{ color: '#fff', textAlign: 'center', width: '100%' }}>
+        <div style={{ marginBottom: 4, textAlign: 'center' }}>
+          <div className="hero-ca">
             {totalCA > 0 ? fmt(totalCA) : '—'}<span> €</span>
           </div>
           <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--sub)', letterSpacing: '0.08em', marginTop: 4 }}>
