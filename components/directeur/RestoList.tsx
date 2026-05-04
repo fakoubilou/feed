@@ -9,9 +9,11 @@ const STATUT_ORDER = { risque: 0, moyen: 1, rentable: 2, vide: 3 } as const
 interface Props {
   restaurants: Restaurant[]
   latestRaz: Record<string, RazEntry | undefined>
+  onSelect?: (id: string) => void
+  selectedId?: string | null
 }
 
-export function RestoList({ restaurants, latestRaz }: Props) {
+export function RestoList({ restaurants, latestRaz, onSelect, selectedId }: Props) {
   const router = useRouter()
   const { settings } = useSettings()
   const today = isoToday()
@@ -38,7 +40,12 @@ export function RestoList({ restaurants, latestRaz }: Props) {
         const sign = rent && rent.profit >= 0 ? '+' : ''
 
         return (
-          <div key={r.id} className="list-row up" onClick={() => router.push(`/directeur/resto/${r.id}`)}>
+          <div
+            key={r.id}
+            className="list-row up"
+            style={selectedId === r.id ? { borderColor: 'var(--accent)', background: 'rgba(108,114,255,0.06)' } : undefined}
+            onClick={() => onSelect ? onSelect(r.id) : router.push(`/directeur/resto/${r.id}`)}
+          >
             <div className="row-body">
               <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 4 }}>
                 <span style={{ fontSize: 13 }}>{cfg.emoji}</span>
