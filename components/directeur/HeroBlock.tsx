@@ -1,7 +1,7 @@
 'use client'
 import { useState } from 'react'
 import {
-  fmt, ticketMoyen, coprod, coprodLabel, isoToday,
+  fmt, ticketMoyen, coprod, coprodLabel, coprodColor, isoToday,
   calcRentabiliteWithSettings, STATUT_CONFIG,
 } from '@/lib/calculations'
 import { useSettings } from '@/lib/useSettings'
@@ -34,12 +34,14 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
   const cp = coprod(totalStaffH, totalCA)
   const ticket = ticketMoyen(totalCA, totalCov)
   const sign = rent && rent.profit >= 0 ? '+' : ''
+  const foodCostPct = Math.round(settings.food_cost * 100)
+  const foodCostColor = foodCostPct < 30 ? 'var(--green)' : foodCostPct <= 35 ? 'var(--orange)' : 'var(--red)'
 
   return (
     <>
-      <div className="hero-block">
+      <div className="hero-block" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, width: '100%' }}>
           <div className="hero-label">Aujourd&apos;hui</div>
           <button onClick={() => setShowPicker(true)} style={{
             display: 'flex', alignItems: 'center', gap: 6,
@@ -53,26 +55,30 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
         </div>
 
         {/* 1. CA */}
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: 10, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.1em', marginBottom: 4 }}>CA HT</div>
-          <div className="hero-ca" style={{ color: '#fff' }}>
+        <div style={{ textAlign: 'center', marginBottom: 4, display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <div className="hero-ca" style={{ color: '#fff', textAlign: 'center' }}>
             {totalCA > 0 ? fmt(totalCA) : '—'}<span> €</span>
+          </div>
+          <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--sub)', letterSpacing: '0.08em', marginTop: 4 }}>
+            CA HT aujourd&apos;hui
           </div>
         </div>
 
         {/* 2. Profit */}
         {rent && rent.statut !== 'vide' && (
-          <div style={{ marginTop: 10, marginBottom: 4, textAlign: 'center' }}>
-            <span style={{ fontSize: 10, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.1em' }}>PROFIT </span>
-            <span style={{ fontSize: 26, fontWeight: 800, color: cfg!.color, letterSpacing: '-0.02em' }}>
+          <div style={{ textAlign: 'center', marginTop: 10, marginBottom: 4 }}>
+            <div style={{ fontSize: 36, fontWeight: 800, color: cfg!.color, letterSpacing: '-0.02em', lineHeight: 1 }}>
               {sign}{fmt(rent.profit)}€
-            </span>
+            </div>
+            <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--sub)', letterSpacing: '0.08em', marginTop: 4 }}>
+              Profit estimé
+            </div>
           </div>
         )}
 
-        {/* 3. Gauge (small) */}
+        {/* 3. Gauge */}
         {rent && rent.statut !== 'vide' && (
-          <div style={{ display: 'flex', justifyContent: 'center', margin: '4px 0' }}>
+          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '4px 0' }}>
             <Gauge
               marge={rent.marge}
               margeFaible={settings.marge_faible}
@@ -93,16 +99,32 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
             }}>
               {cfg.emoji} {cfg.label} · {rent.marge.toFixed(1)}%
             </div>
-            {rent.explication && <div style={{ fontSize: 12, color: 'var(--sub)' }}>{rent.explication}</div>}
+            {rent.explication && <div style={{ fontSize: 12, color: 'var(--sub)', textAlign: 'center' }}>{rent.explication}</div>}
           </div>
         )}
 
-        {/* Secondary stats */}
+        {/* Secondary KPIs */}
         {totalCA > 0 && (
-          <div style={{ display: 'flex', justifyContent: 'center', gap: 16, fontSize: 12, color: 'var(--dim)' }}>
-            {totalCov > 0 && <span>Ticket {fmt(ticket)}€</span>}
-            {totalStaffH > 0 && <span>Co.prod {coprodLabel(cp)}</span>}
-            {totalCov > 0 && <span>{totalCov} cvts</span>}
+          <div style={{
+            display: 'flex', width: '100%',
+            borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 14, marginTop: 4,
+          }}>
+            <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: coprodColor(cp), letterSpacing: '-0.01em', lineHeight: 1 }}>{coprodLabel(cp)}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 4 }}>Co. prod</div>
+            </div>
+            <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--blue)', letterSpacing: '-0.01em', lineHeight: 1 }}>{totalCov > 0 ? `${fmt(ticket)}€` : '—'}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 4 }}>Ticket moyen</div>
+            </div>
+            <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: foodCostColor, letterSpacing: '-0.01em', lineHeight: 1 }}>{foodCostPct}%</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 4 }}>Food cost</div>
+            </div>
+            <div style={{ flex: 1, textAlign: 'center' }}>
+              <div style={{ fontSize: 15, fontWeight: 800, color: 'var(--blue)', letterSpacing: '-0.01em', lineHeight: 1 }}>{totalCov > 0 ? totalCov : '—'}</div>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.08em', textTransform: 'uppercase', marginTop: 4 }}>Couverts</div>
+            </div>
           </div>
         )}
       </div>

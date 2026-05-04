@@ -39,7 +39,7 @@ export function ProfitChart({ entries }: { entries: RazEntry[] }) {
   const areaColor = lastProfit >= 0 ? 'rgba(29,233,160,0.07)' : 'rgba(255,91,91,0.07)'
 
   return (
-    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%' }}>
+    <svg viewBox={`0 0 ${W} ${H}`} style={{ width: '100%', display: 'block' }}>
       {/* Horizontal grid */}
       {[0.25, 0.5, 0.75].map(t => (
         <line key={t} x1={PL} y1={PT + t * CH} x2={W - PR} y2={PT + t * CH}

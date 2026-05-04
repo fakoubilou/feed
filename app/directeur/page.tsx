@@ -69,14 +69,16 @@ export default async function DirecteurPage() {
         <div className="page-head">
           <div className="page-head-sub" style={{ marginBottom: 16 }}>{todayFull()}</div>
         </div>
-        <div style={{ padding: '0 20px' }}>
+        <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
           <HeroBlock restaurants={restaurants} latestRaz={latestRaz} />
           {aggregatedEntries.length >= 2 && (
             <div style={{
+              width: '100%',
               background: 'rgba(255,255,255,0.03)', border: '1px solid var(--line2)',
               borderRadius: 14, padding: '14px 10px 8px', marginTop: 12,
+              display: 'flex', flexDirection: 'column', alignItems: 'center',
             }}>
-              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4, paddingLeft: 6 }}>
+              <div style={{ fontSize: 9, fontWeight: 700, color: 'var(--dim)', letterSpacing: '0.1em', textTransform: 'uppercase', marginBottom: 4, textAlign: 'center', width: '100%' }}>
                 Profit agrégé — tendance
               </div>
               <ProfitChart entries={aggregatedEntries} />
