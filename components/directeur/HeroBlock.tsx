@@ -56,7 +56,7 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
 
         {/* 1. CA */}
         <div style={{ marginBottom: 4, textAlign: 'center' }}>
-          <div className="hero-ca">
+          <div className="hero-ca" style={{ margin: '0 auto', textAlign: 'center' }}>
             {totalCA > 0 ? fmt(totalCA) : '—'}<span> €</span>
           </div>
           <div style={{ fontSize: 11, fontWeight: 600, color: 'var(--sub)', letterSpacing: '0.08em', marginTop: 4 }}>
