@@ -39,9 +39,9 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
 
   return (
     <>
-      <div className="hero-block" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+      <div className="hero-block" style={{ width: '100%', maxWidth: 420, margin: '0 auto', padding: '0 16px', display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
         {/* Header */}
-        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16, width: '100%', maxWidth: 360 }}>
           <div className="hero-label">Aujourd&apos;hui</div>
           <button onClick={() => setShowPicker(true)} style={{
             display: 'flex', alignItems: 'center', gap: 6,
@@ -56,7 +56,7 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
         </div>
 
         {/* 1. CA */}
-        <div style={{ marginBottom: 4, textAlign: 'center', width: '100%' }}>
+        <div style={{ marginBottom: 4, textAlign: 'center', width: '100%', maxWidth: 360 }}>
           <div className="hero-ca" style={{ margin: '0 auto', textAlign: 'center' }}>
             {totalCA > 0 ? fmt(totalCA) : '—'}<span> €</span>
           </div>
@@ -79,7 +79,7 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
 
         {/* 3. Gauge */}
         {rent && rent.statut !== 'vide' && (
-          <div style={{ width: '100%', display: 'flex', justifyContent: 'center', margin: '4px 0' }}>
+          <div style={{ width: '100%', maxWidth: 360, display: 'flex', justifyContent: 'center', margin: '4px 0' }}>
             <Gauge
               marge={rent.marge}
               margeFaible={settings.marge_faible}
@@ -107,7 +107,7 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
         {/* Secondary KPIs */}
         {totalCA > 0 && (
           <div style={{
-            display: 'flex', width: '100%',
+            display: 'flex', width: '100%', maxWidth: 360,
             borderTop: '1px solid rgba(255,255,255,0.08)', paddingTop: 14, marginTop: 4,
           }}>
             <div style={{ flex: 1, textAlign: 'center', borderRight: '1px solid rgba(255,255,255,0.06)' }}>
