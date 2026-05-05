@@ -41,13 +41,14 @@ export function HeroBlock({ restaurants, latestRaz }: Props) {
     <>
       <div className="hero-block" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: 16, width: '100%' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: 10, marginBottom: 16, width: '100%' }}>
           <div className="hero-label">Aujourd&apos;hui</div>
           <button onClick={() => setShowPicker(true)} style={{
             display: 'flex', alignItems: 'center', gap: 6,
             background: 'rgba(255,255,255,0.06)', border: '1px solid rgba(255,255,255,0.1)',
             borderRadius: 100, padding: '6px 12px',
             fontSize: 12, fontWeight: 700, color: 'var(--sub)', cursor: 'pointer',
+            margin: '0 auto',
           }}>
             <span style={{ width: 6, height: 6, borderRadius: '50%', background: restosDone > 0 ? 'var(--green)' : 'var(--dim)', display: 'inline-block' }} />
             {restosDone}/{restaurants.length} restos ›
