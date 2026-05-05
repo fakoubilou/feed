@@ -54,13 +54,17 @@ export default async function DirecteurPage() {
         <div className="page-head">
           <div className="page-head-sub" style={{ marginBottom: 16 }}>{todayFull()}</div>
         </div>
-        <div style={{ padding: '0 20px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
-          <HeroBlock restaurants={restaurants} latestRaz={latestRaz} />
-        </div>
-        <div className="section">
-          <AlertsZone restaurants={restaurants} latestRaz={latestRaz} />
-          <div className="sec-label">Restaurants</div>
-          <DirecteurClient restaurants={restaurants} latestRaz={latestRaz} recentRaz={recentRaz} />
+        <div style={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <div style={{ width: '100%', maxWidth: 420 }}>
+            <div style={{ padding: '0 16px' }}>
+              <HeroBlock restaurants={restaurants} latestRaz={latestRaz} />
+            </div>
+            <div className="section">
+              <AlertsZone restaurants={restaurants} latestRaz={latestRaz} />
+              <div className="sec-label">Restaurants</div>
+              <DirecteurClient restaurants={restaurants} latestRaz={latestRaz} recentRaz={recentRaz} />
+            </div>
+          </div>
         </div>
       </div>
 
